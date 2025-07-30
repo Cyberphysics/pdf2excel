@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  pdf2excel:
+    build: .
+    container_name: pdf2excel-service
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./uploads:/app/uploads
+      - ./outputs:/app/outputs
+      - ./data:/app/data
+      - ./logs:/app/logs
+      - ./config:/app/config
+    environment:
+      - FLASK_ENV=production
+      - JAVA_HOME=/usr/lib/jvm/default-java
+      - PYTHONPATH=/app
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/api/pdf/diagnose"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - pdf2excel-network
+
+networks:
+  pdf2excel-network:
+    driver: bridge

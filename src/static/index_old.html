@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF转Excel服务</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- 头部 -->
+        <header class="header">
+            <div class="header-content">
+                <h1><i class="fas fa-file-excel"></i> PDF转Excel服务</h1>
+                <p>快速、准确地将PDF表格转换为Excel文件</p>
+            </div>
+        </header>
+
+        <!-- 主要内容区域 -->
+        <main class="main-content">
+            <!-- 上传区域 -->
+            <section id="upload-section" class="section active">
+                <div class="upload-container">
+                    <div class="upload-area" id="upload-area">
+                        <div class="upload-icon">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                        </div>
+                        <h3>拖拽PDF文件到此处或点击选择</h3>
+                        <p>支持PDF格式，最大文件大小50MB</p>
+                        <input type="file" id="file-input" accept=".pdf" hidden>
+                        <button class="btn btn-primary" id="select-file-btn">
+                            <i class="fas fa-folder-open"></i> 选择文件
+                        </button>
+                    </div>
+                    
+                    <div class="file-info" id="file-info" style="display: none;">
+                        <div class="file-details">
+                            <i class="fas fa-file-pdf"></i>
+                            <div class="file-text">
+                                <span class="file-name" id="file-name"></span>
+                                <span class="file-size" id="file-size"></span>
+                            </div>
+                            <button class="btn btn-secondary btn-small" id="change-file-btn">
+                                <i class="fas fa-edit"></i> 更换文件
+                            </button>
+                        </div>
+                        <button class="btn btn-success" id="upload-btn">
+                            <i class="fas fa-upload"></i> 开始转换
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 转换进度区域 -->
+            <section id="progress-section" class="section">
+                <div class="progress-container">
+                    <div class="progress-header">
+                        <h3><i class="fas fa-cog fa-spin"></i> 正在转换中...</h3>
+                        <p>请稍候，我们正在处理您的PDF文件</p>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progress-fill"></div>
+                    </div>
+                    <div class="progress-steps">
+                        <div class="step active" id="step-upload">
+                            <i class="fas fa-upload"></i>
+                            <span>文件上传</span>
+                        </div>
+                        <div class="step" id="step-parse">
+                            <i class="fas fa-search"></i>
+                            <span>解析PDF</span>
+                        </div>
+                        <div class="step" id="step-convert">
+                            <i class="fas fa-exchange-alt"></i>
+                            <span>转换Excel</span>
+                        </div>
+                        <div class="step" id="step-complete">
+                            <i class="fas fa-check"></i>
+                            <span>转换完成</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 预览区域 -->
+            <section id="preview-section" class="section">
+                <div class="preview-container">
+                    <div class="preview-header">
+                        <h3><i class="fas fa-eye"></i> 转换结果预览</h3>
+                        <div class="preview-actions">
+                            <button class="btn btn-success" id="download-btn">
+                                <i class="fas fa-download"></i> 下载Excel文件
+                            </button>
+                            <button class="btn btn-secondary" id="new-conversion-btn">
+                                <i class="fas fa-plus"></i> 新的转换
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="conversion-summary" id="conversion-summary">
+                        <!-- 转换摘要信息将在这里显示 -->
+                    </div>
+                    
+                    <div class="tables-container" id="tables-container">
+                        <!-- 表格预览将在这里显示 -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- 错误区域 -->
+            <section id="error-section" class="section">
+                <div class="error-container">
+                    <div class="error-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <h3>转换失败</h3>
+                    <p id="error-message">发生了未知错误，请重试</p>
+                    <button class="btn btn-primary" id="retry-btn">
+                        <i class="fas fa-redo"></i> 重新尝试
+                    </button>
+                </div>
+            </section>
+        </main>
+
+        <!-- 页脚 -->
+        <footer class="footer">
+            <p>&copy; 2025 PDF转Excel服务. 保留所有权利.</p>
+        </footer>
+    </div>
+
+    <!-- 加载提示 -->
+    <div class="loading-overlay" id="loading-overlay">
+        <div class="loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>处理中...</p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
+
