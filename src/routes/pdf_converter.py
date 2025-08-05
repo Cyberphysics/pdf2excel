@@ -4,8 +4,20 @@ import os
 import uuid
 import pandas as pd
 import numpy as np
-import camelot
-import tabula
+# Optional PDF table extraction libraries
+try:
+    import camelot
+    CAMELOT_AVAILABLE = True
+except ImportError:
+    CAMELOT_AVAILABLE = False
+    camelot = None
+
+try:
+    import tabula
+    TABULA_AVAILABLE = True
+except ImportError:
+    TABULA_AVAILABLE = False
+    tabula = None
 from datetime import datetime
 import traceback
 import json
@@ -351,6 +363,9 @@ def clean_numeric_value(value):
 
 def extract_tables_with_camelot(pdf_path):
     """使用Camelot提取PDF表格"""
+    if not CAMELOT_AVAILABLE:
+        return None, "Camelot库未安装，这是可选依赖"
+    
     try:
         # 首先尝试lattice模式
         tables = camelot.read_pdf(pdf_path, pages='all', flavor='lattice')
@@ -385,6 +400,9 @@ def extract_tables_with_camelot(pdf_path):
 
 def extract_tables_with_tabula(pdf_path):
     """使用Tabula作为备选方案提取PDF表格"""
+    if not TABULA_AVAILABLE:
+        return None, "Tabula库未安装，这是可选依赖"
+    
     try:
         tables = tabula.read_pdf(pdf_path, pages='all', multiple_tables=True, pandas_options={'header': None})
         extracted_data = []
@@ -423,6 +441,82 @@ def convert_to_excel(extracted_data, output_path):
         return True, None
     except Exception as e:
         return False, str(e)
+
+@pdf_converter_bp.route('/diagnose', methods=['GET'])
+def diagnose_pdf_capabilities():
+    """诊断PDF处理能力"""
+    try:
+        capabilities = {
+            'service_status': 'running',
+            'pdf_libraries': {},
+            'system_dependencies': {},
+            'supported_formats': ['pdf'],
+            'max_file_size': '50MB',
+            'version': '2.0.0'
+        }
+        
+        # 检查PDF处理库
+        try:
+            import pdfplumber
+            capabilities['pdf_libraries']['pdfplumber'] = True
+        except ImportError:
+            capabilities['pdf_libraries']['pdfplumber'] = False
+            
+        try:
+            import PyPDF2
+            capabilities['pdf_libraries']['PyPDF2'] = True
+        except ImportError:
+            capabilities['pdf_libraries']['PyPDF2'] = False
+            
+        # 检查可选的表格提取库
+        capabilities['pdf_libraries']['camelot'] = CAMELOT_AVAILABLE
+        capabilities['pdf_libraries']['tabula'] = TABULA_AVAILABLE
+        
+        # 检查系统依赖
+        import subprocess
+        try:
+            subprocess.run(['java', '-version'], capture_output=True, check=True)
+            capabilities['system_dependencies']['java'] = True
+        except:
+            capabilities['system_dependencies']['java'] = False
+            
+        try:
+            subprocess.run(['gs', '--version'], capture_output=True, check=True)
+            capabilities['system_dependencies']['ghostscript'] = True
+        except:
+            capabilities['system_dependencies']['ghostscript'] = False
+            
+        try:
+            subprocess.run(['pdfinfo', '-v'], capture_output=True, check=True)
+            capabilities['system_dependencies']['poppler'] = True
+        except:
+            capabilities['system_dependencies']['poppler'] = False
+            
+        return safe_jsonify(capabilities)
+        
+    except Exception as e:
+        return safe_jsonify({
+            'error': f'诊断失败: {str(e)}',
+            'service_status': 'error'
+        }), 500
+
+@pdf_converter_bp.route('/health', methods=['GET'])
+def health_check():
+    """健康检查"""
+    return safe_jsonify({
+        'status': 'healthy',
+        'timestamp': datetime.now().isoformat(),
+        'service': 'pdf-to-excel',
+        'core_dependencies': {
+            'pdfplumber': True,  # 核心依赖，应该始终可用
+            'pandas': True,
+            'openpyxl': True
+        },
+        'optional_dependencies': {
+            'camelot': CAMELOT_AVAILABLE,
+            'tabula': TABULA_AVAILABLE
+        }
+    })
 
 @pdf_converter_bp.route('/upload', methods=['POST'])
 def upload_file():
