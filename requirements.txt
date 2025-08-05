@@ -1,29 +1,28 @@
 # Flask核心框架
-Flask==3.1.1
-flask-cors==6.0.0
-Flask-SQLAlchemy==3.1.1
-Werkzeug==3.1.3
+Flask==2.3.3
+flask-cors==4.0.0
+Flask-SQLAlchemy==3.0.5
+Werkzeug==2.3.7
 
 # 数据处理
-pandas==2.3.1
-numpy==2.2.6
-openpyxl==3.1.5
+pandas==2.0.3
+numpy==1.24.3
+openpyxl==3.1.2
 
-# PDF文本提取库 (按优先级排序)
+# PDF文本提取库 (兼容版本，解决依赖冲突)
 pdfplumber==0.9.0
-pdfminer.six==20250506
-pypdf==3.17.4
+# 注意：不要手动指定pdfminer.six版本，让pdfplumber自动管理
+PyPDF2==3.0.1
 
 # PDF表格提取库
-camelot-py==1.0.0
-tabula-py==2.10.0
+camelot-py[cv]==0.10.1
+tabula-py==2.7.0
 
 # 图像处理依赖
-opencv-python-headless==4.12.0.88
+opencv-python-headless==4.8.0.76
 
 # 其他依赖
 requests==2.31.0
-python-dateutil==2.9.0.post0
-pytz==2025.2
-six==1.17.0
-tabulate==0.9.0
+python-dateutil==2.8.2
+pytz==2023.3
+six==1.16.0

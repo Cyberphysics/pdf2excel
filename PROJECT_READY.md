@@ -60,11 +60,20 @@ git push -u origin main
 
 ### 技术特性
 - ✅ Docker容器化支持
-- ✅ 多PDF处理引擎
+- ✅ 多PDF处理引擎（5种库支持）
 - ✅ 智能回退机制
+- ✅ 增强PDF解析器
+- ✅ JSON序列化安全保障
 - ✅ 健康检查和监控
 - ✅ 完整的错误处理
 - ✅ 标准目录结构
+
+### PDF处理引擎
+- ✅ pdfplumber（推荐文本提取）
+- ✅ pdfminer.six（备选文本提取）
+- ✅ PyPDF2（兼容性文本提取）
+- ✅ Camelot（专业表格提取）
+- ✅ Tabula（备选表格提取）
 
 ### 部署特性
 - ✅ 一键部署脚本
@@ -76,7 +85,13 @@ git push -u origin main
 
 ## 🔧 快速验证
 
-### 1. 本地测试
+### 1. 快速启动测试
+```bash
+# 使用快速启动脚本
+python3 quick_start.py
+```
+
+### 2. 本地测试
 ```bash
 # 构建镜像
 docker build -t pdf2excel .
@@ -88,7 +103,7 @@ docker run -d -p 5000:5000 pdf2excel
 curl http://localhost:5000/api/pdf/diagnose
 ```
 
-### 2. 完整部署
+### 3. 完整部署
 ```bash
 # 使用部署脚本
 ./deploy.sh prod
@@ -153,8 +168,10 @@ docker-compose logs -f
 - 🔥 完整的PDF转Excel转换
 - 🔥 Docker一键部署
 - 🔥 RESTful API接口
-- 🔥 智能PDF解析
+- 🔥 智能PDF解析（5种引擎）
+- 🔥 增强PDF解析器（三部分识别）
 - 🔥 多工作表输出
 - 🔥 订单规格比对
+- 🔥 JSON序列化安全保障
 
 **准备上传到GitHub！** 🚀

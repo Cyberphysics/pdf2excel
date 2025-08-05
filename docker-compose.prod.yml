@@ -1,0 +1,63 @@
+# 生产环境Docker Compose配置
+version: '3.8'
+
+services:
+  pdf2excel:
+    image: your-dockerhub-username/pdf2excel:latest
+    container_name: pdf2excel-service
+    ports:
+      - "80:5000"
+    environment:
+      - FLASK_ENV=production
+      - FLASK_DEBUG=false
+      - MAX_CONTENT_LENGTH=100MB
+      - PYTHONUNBUFFERED=1
+    volumes:
+      - pdf2excel_data:/app/data
+      - pdf2excel_logs:/app/logs
+      - pdf2excel_uploads:/app/uploads
+      - pdf2excel_outputs:/app/outputs
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/api/pdf/diagnose"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+          cpus: '1.0'
+        reservations:
+          memory: 512M
+          cpus: '0.5'
+
+  # 可选: Nginx反向代理 (如果需要HTTPS或负载均衡)
+  nginx:
+    image: nginx:alpine
+    container_name: pdf2excel-nginx
+    ports:
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - pdf2excel
+    restart: unless-stopped
+    profiles:
+      - with-nginx
+
+volumes:
+  pdf2excel_data:
+    driver: local
+  pdf2excel_logs:
+    driver: local
+  pdf2excel_uploads:
+    driver: local
+  pdf2excel_outputs:
+    driver: local
+
+networks:
+  default:
+    name: pdf2excel-network

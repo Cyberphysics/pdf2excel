@@ -33,6 +33,25 @@
 | PRICE | 单价 |
 | AMOUNT | 总价 |
 
+## 🔧 PDF处理引擎
+
+系统集成了多种PDF处理库，按优先级自动选择最佳引擎：
+
+### 文本提取引擎
+1. **pdfplumber** (推荐) - 高精度文本提取
+2. **pdfminer.six** - 备选文本提取引擎
+3. **PyPDF2** - 兼容性文本提取
+
+### 表格提取引擎
+1. **Camelot** - 专业表格提取（支持lattice和stream模式）
+2. **Tabula** - 备选表格提取引擎
+
+### 增强PDF解析器
+- **三部分内容识别**：自动分离客户信息、订单表格、总结信息
+- **多工作表Excel生成**：为每个部分创建独立工作表
+- **智能关键词识别**：基于中英文关键词自动识别内容区域
+- **结构化数据提取**：自动解析客户信息和财务汇总数据
+
 ## 🚀 快速开始
 
 ### 使用Docker部署（推荐）
@@ -66,9 +85,9 @@ docker-compose logs -f
 
 1. **环境要求**
 - Python 3.8+
-- Java Runtime Environment (JRE)
-- Ghostscript
-- Poppler Utils
+- Java Runtime Environment (JRE) - Tabula依赖
+- Ghostscript - PDF处理支持
+- Poppler Utils - PDF工具集
 
 2. **安装系统依赖**
 
@@ -88,10 +107,32 @@ brew install python3 openjdk ghostscript poppler
 pip install -r requirements.txt
 ```
 
-4. **启动服务**
+4. **验证PDF处理能力**
+```bash
+# 启动服务后检查PDF处理库状态
+curl http://localhost:5000/api/pdf/diagnose
+```
+
+5. **启动服务**
 ```bash
 python -m src.main
 ```
+
+### 快速测试脚本
+
+项目提供了一个快速启动测试脚本，可以自动检查依赖并启动服务：
+
+```bash
+# 快速启动和测试
+python3 quick_start.py
+```
+
+该脚本会：
+- 自动检查关键Python依赖
+- 启动PDF转Excel服务
+- 测试基本API端点
+- 提供服务诊断信息
+- 保持服务运行直到手动停止
 
 ## 📁 项目结构
 
@@ -332,13 +373,17 @@ curl http://localhost:5000/api/pdf/list_converted
 
 ## 🔄 更新日志
 
-### v2.0.0 (2025-01-30)
+### v2.0.0 (2025-07-30)
 - ✨ 新增增强PDF解析器，支持三部分识别
 - ✨ 新增多工作表Excel输出
 - ✨ 新增Docker完整支持
 - ✨ 新增诊断和测试API
+- ✨ 优化依赖管理，按功能分组
+- ✨ 增强PDF处理库支持（pdfplumber、pdfminer、PyPDF2）
+- ✨ 智能PDF处理引擎选择和回退机制
 - 🐛 修复Docker环境PDF解析问题
 - 🔧 优化目录结构，符合业界标准
+- 🔧 统一JSON序列化安全处理
 
 ### v1.0.0
 - 🎉 初始版本发布
