@@ -1,0 +1,23 @@
+# 最小化依赖 - 仅核心PDF处理功能
+
+# Flask核心框架
+Flask==2.3.3
+flask-cors==4.0.0
+Flask-SQLAlchemy==3.0.5
+Werkzeug==2.3.7
+
+# 数据处理
+pandas==2.0.3
+numpy==1.24.3
+openpyxl==3.1.2
+
+# PDF文本提取库 (核心功能)
+pdfplumber==0.9.0
+PyPDF2==3.0.1
+
+# 基础HTTP请求 (不使用HTTPS相关功能)
+urllib3==1.26.18
+
+# 其他必需依赖
+python-dateutil==2.8.2
+six==1.16.0

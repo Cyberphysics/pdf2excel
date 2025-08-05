@@ -20,7 +20,7 @@ def test_package_installation():
         'openpyxl': 'openpyxl',
         'pdfplumber': 'pdfplumber',
         'pdfminer.six': 'pdfminer',
-        'pypdf': 'pypdf',
+        'PyPDF2': 'pypdf2',
         'camelot': 'camelot',
         'tabula': 'tabula',
         'cv2': 'cv2',
@@ -51,7 +51,7 @@ def test_pdf_libraries():
         
         # 检查版本兼容性
         pdfminer_version = pdfminer.__version__
-        if pdfminer_version.startswith('20221105'):
+        if pdfminer_version.startswith('20221105') or pdfminer_version.startswith('20231228'):
             print("✅ pdfminer.six版本与pdfplumber兼容")
             return True
         else:
@@ -63,8 +63,8 @@ def test_pdf_libraries():
         return False
 
 def test_camelot_dependencies():
-    """测试Camelot依赖"""
-    print("\n🔍 测试Camelot依赖...")
+    """测试Camelot依赖（可选）"""
+    print("\n🔍 测试Camelot依赖（可选）...")
     
     try:
         import camelot
@@ -73,7 +73,8 @@ def test_camelot_dependencies():
         print(f"✅ opencv版本: {cv2.__version__}")
         return True
     except ImportError as e:
-        print(f"❌ Camelot依赖导入失败: {e}")
+        print(f"⚠️  Camelot依赖未安装（可选功能）: {e}")
+        print("   💡 注意: Camelot是可选依赖，不影响核心PDF处理功能")
         return False
 
 def check_system_dependencies():
@@ -106,35 +107,33 @@ def generate_fixed_requirements():
     """生成修复后的requirements.txt建议"""
     print("\n🔧 生成修复建议...")
     
-    fixed_requirements = """# Flask核心框架
-Flask==3.1.1
-flask-cors==6.0.0
-Flask-SQLAlchemy==3.1.1
-Werkzeug==3.1.3
+    fixed_requirements = """# Flask核心框架 (代码中实际使用)
+Flask==2.3.3
+flask-cors==4.0.0
+Flask-SQLAlchemy==3.0.5
+Werkzeug==2.3.7
 
-# 数据处理
-pandas==2.3.1
-numpy==2.2.6
-openpyxl==3.1.5
+# 数据处理 (pandas/numpy兼容版本)
+numpy==1.24.3
+pandas==2.0.3
 
-# PDF文本提取库 (兼容版本)
+# Excel处理 (openpyxl用于样式和注释)
+openpyxl==3.1.2
+
+# PDF处理库 (核心功能)
 pdfplumber==0.9.0
-# pdfminer.six==20221105  # 由pdfplumber自动管理
-pypdf==3.17.4
+PyPDF2==3.0.1
 
-# PDF表格提取库
-camelot-py[cv]==1.0.0
-tabula-py==2.10.0
+# PDF表格提取 (可选，如果构建失败可注释掉)
+# camelot-py[cv]==0.10.1
+# tabula-py==2.7.0
 
-# 图像处理依赖
-opencv-python-headless==4.12.0.88
+# 基础依赖
+python-dateutil==2.8.2
+six==1.16.0
 
-# 其他依赖
-requests==2.31.0
-python-dateutil==2.9.0.post0
-pytz==2025.2
-six==1.17.0
-tabulate==0.9.0"""
+# 开发和测试用 (可选)
+requests==2.31.0"""
     
     print("建议的requirements.txt内容:")
     print(fixed_requirements)

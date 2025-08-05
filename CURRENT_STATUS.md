@@ -10,8 +10,8 @@
    - 数据库模型和配置
 
 2. **依赖管理优化**
-   - 修复了pdfminer.six版本冲突
-   - 优化了requirements.txt
+   - 修复了pdfminer.six版本冲突，回退到稳定兼容版本
+   - 优化了requirements.txt，使用经过测试的依赖版本
    - 创建了依赖测试脚本
 
 3. **Docker化支持**

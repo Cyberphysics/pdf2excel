@@ -1,0 +1,29 @@
+# 无加密依赖版本 - 跳过可能导致cryptography安装的包
+
+# Flask核心框架
+Flask==2.3.3
+flask-cors==4.0.0
+Flask-SQLAlchemy==3.0.5
+Werkzeug==2.3.7
+
+# 数据处理
+pandas==2.0.3
+numpy==1.24.3
+openpyxl==3.1.2
+
+# PDF文本提取库 (核心功能)
+pdfplumber==0.9.0
+PyPDF2==3.0.1
+
+# 表格提取库 (简化版本，不包含cv依赖)
+tabula-py==2.7.0
+
+# 基础依赖
+python-dateutil==2.8.2
+pytz==2023.3
+six==1.16.0
+
+# 注意：暂时移除以下可能导致cryptography安装的包：
+# - requests (可能需要cryptography用于HTTPS)
+# - camelot-py[cv] (opencv依赖可能需要cryptography)
+# - opencv-python-headless (可能需要cryptography)

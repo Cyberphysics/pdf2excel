@@ -913,8 +913,8 @@ def delete_converted_file(file_id):
         return safe_jsonify({'message': '文件删除成功'}), 200
     except Exception as e:
         return safe_jsonify({'error': f'删除文件失败: {str(e)}'}), 500
-@
-pdf_converter_bp.route('/diagnose', methods=['GET'])
+
+@pdf_converter_bp.route('/diagnose', methods=['GET'])
 def diagnose_pdf_capabilities():
     """诊断PDF处理能力"""
     try:

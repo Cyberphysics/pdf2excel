@@ -53,23 +53,20 @@ pandas==2.0.3
 numpy==1.24.3
 openpyxl==3.1.2
 
-# PDF文本提取库 (兼容版本)
+# PDF处理库 (核心功能)
 pdfplumber==0.9.0
-# 重要：不指定pdfminer.six版本，让pdfplumber自动管理依赖
 PyPDF2==3.0.1
 
-# PDF表格提取库
-camelot-py[cv]==0.10.1
-tabula-py==2.7.0
+# PDF表格提取 (可选，如果构建失败可注释掉)
+# camelot-py[cv]==0.10.1
+# tabula-py==2.7.0
 
-# 图像处理依赖
-opencv-python-headless==4.8.0.76
-
-# 其他依赖
-requests==2.31.0
+# 基础依赖
 python-dateutil==2.8.2
-pytz==2023.3
 six==1.16.0
+
+# 开发和测试用 (可选)
+requests==2.31.0
 EOF
 
 # 4. 备份原文件并替换
