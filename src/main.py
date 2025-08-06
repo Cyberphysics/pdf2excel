@@ -23,7 +23,14 @@ app.register_blueprint(pdf_converter_bp, url_prefix='/api/pdf')
 app.register_blueprint(spec_bp)  # 新增的规格表比对功能
 
 # uncomment if you need to use database
-from .utils.path_manager import get_path_manager
+try:
+    from .utils.path_manager import get_path_manager
+except ImportError:
+    # 当直接运行时的fallback
+    import sys
+    import os
+    sys.path.append(os.path.dirname(os.path.dirname(__file__)))
+    from src.utils.path_manager import get_path_manager
 path_manager = get_path_manager()
 app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{path_manager.get_database_path('app.db')}"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
