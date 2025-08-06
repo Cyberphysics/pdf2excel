@@ -48,8 +48,20 @@ from openpyxl.comments import Comment
 ### 📄 **PDF处理依赖**
 ```python
 # src/routes/pdf_converter.py
-import camelot  # 可选
-import tabula   # 可选
+# 可选的PDF表格提取库 (条件导入)
+try:
+    import camelot
+    CAMELOT_AVAILABLE = True
+except ImportError:
+    CAMELOT_AVAILABLE = False
+    camelot = None
+
+try:
+    import tabula
+    TABULA_AVAILABLE = True
+except ImportError:
+    TABULA_AVAILABLE = False
+    tabula = None
 
 # src/utils/enhanced_pdf_parser.py
 import PyPDF2
@@ -63,6 +75,8 @@ import pdfplumber
 **可选包** (如果构建失败可移除):
 - `camelot-py[cv]==0.10.1` (表格提取，依赖opencv)
 - `tabula-py==2.7.0` (表格提取，依赖Java)
+
+**条件导入机制**：代码使用try/except模式导入可选依赖，确保即使这些库未安装，服务也能正常运行。
 
 ### 🛠️ **工具库依赖**
 ```python
