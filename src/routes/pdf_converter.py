@@ -428,13 +428,30 @@ def extract_tables_with_tabula(pdf_path):
 def convert_to_excel(extracted_data, output_path):
     """将提取的数据转换为Excel文件"""
     try:
+        # 检查输入数据
+        if not extracted_data or not isinstance(extracted_data, list):
+            # 创建一个空的Excel文件，包含提示信息
+            df_empty = pd.DataFrame({
+                '提示': ['未能从PDF中提取到表格数据'],
+                '说明': ['请检查PDF文件是否包含表格，或尝试其他PDF文件']
+            })
+            with pd.ExcelWriter(output_path, engine='openpyxl') as writer:
+                df_empty.to_excel(writer, sheet_name='提示信息', index=False)
+            return True, "未提取到表格数据，已创建空文件"
+        
         with pd.ExcelWriter(output_path, engine='openpyxl') as writer:
             for table_info in extracted_data:
+                if not isinstance(table_info, dict) or 'data' not in table_info:
+                    continue
+                    
                 df = table_info['data']
-                sheet_name = f"Table_{table_info['table_index']}_Page_{table_info['page']}"
+                if df is None or df.empty:
+                    continue
+                    
+                sheet_name = f"Table_{table_info.get('table_index', 1)}_Page_{table_info.get('page', 1)}"
                 # Excel工作表名称长度限制
                 if len(sheet_name) > 31:
-                    sheet_name = f"Table_{table_info['table_index']}"
+                    sheet_name = f"Table_{table_info.get('table_index', 1)}"
                 
                 df.to_excel(writer, sheet_name=sheet_name, index=False)
         
@@ -582,12 +599,21 @@ def convert_pdf(file_id):
                 return safe_jsonify({'error': f'Excel生成失败: {error}'}), 500
         
         # 创建转换后文件的元数据
+        # 安全地计算记录数量
+        record_count = 0
+        if extracted_data and isinstance(extracted_data, list):
+            try:
+                record_count = sum(len(table.get('data', [])) if isinstance(table, dict) and 'data' in table else 0 for table in extracted_data)
+            except Exception as e:
+                current_app.logger.warning(f"计算记录数量失败: {str(e)}")
+                record_count = 0
+        
         converted_metadata = {
             'original_filename': original_filename,
             'filename': converted_filename,
             'convert_time': datetime.now().isoformat(),
             'file_size': os.path.getsize(excel_path),
-            'record_count': sum(len(table['data']) for table in extracted_data)
+            'record_count': record_count
         }
         
         # 保存元数据
@@ -598,12 +624,15 @@ def convert_pdf(file_id):
         # 使用统一的预览数据准备函数
         preview_data = prepare_preview_data(extracted_data, max_rows=10)
         
+        # 安全地计算表格数量
+        tables_count = len(extracted_data) if extracted_data and isinstance(extracted_data, list) else 0
+        
         return safe_jsonify({
             'message': '转换成功',
             'file_id': file_id,
             'excel_filename': excel_filename,
             'filename': converted_filename,
-            'tables_count': len(extracted_data),
+            'tables_count': tables_count,
             'preview_data': preview_data
         }), 200
         
