@@ -442,63 +442,7 @@ def convert_to_excel(extracted_data, output_path):
     except Exception as e:
         return False, str(e)
 
-@pdf_converter_bp.route('/diagnose', methods=['GET'])
-def diagnose_pdf_capabilities():
-    """诊断PDF处理能力"""
-    try:
-        capabilities = {
-            'service_status': 'running',
-            'pdf_libraries': {},
-            'system_dependencies': {},
-            'supported_formats': ['pdf'],
-            'max_file_size': '50MB',
-            'version': '2.0.0'
-        }
-        
-        # 检查PDF处理库
-        try:
-            import pdfplumber
-            capabilities['pdf_libraries']['pdfplumber'] = True
-        except ImportError:
-            capabilities['pdf_libraries']['pdfplumber'] = False
-            
-        try:
-            import PyPDF2
-            capabilities['pdf_libraries']['PyPDF2'] = True
-        except ImportError:
-            capabilities['pdf_libraries']['PyPDF2'] = False
-            
-        # 检查可选的表格提取库
-        capabilities['pdf_libraries']['camelot'] = CAMELOT_AVAILABLE
-        capabilities['pdf_libraries']['tabula'] = TABULA_AVAILABLE
-        
-        # 检查系统依赖
-        import subprocess
-        try:
-            subprocess.run(['java', '-version'], capture_output=True, check=True)
-            capabilities['system_dependencies']['java'] = True
-        except:
-            capabilities['system_dependencies']['java'] = False
-            
-        try:
-            subprocess.run(['gs', '--version'], capture_output=True, check=True)
-            capabilities['system_dependencies']['ghostscript'] = True
-        except:
-            capabilities['system_dependencies']['ghostscript'] = False
-            
-        try:
-            subprocess.run(['pdfinfo', '-v'], capture_output=True, check=True)
-            capabilities['system_dependencies']['poppler'] = True
-        except:
-            capabilities['system_dependencies']['poppler'] = False
-            
-        return safe_jsonify(capabilities)
-        
-    except Exception as e:
-        return safe_jsonify({
-            'error': f'诊断失败: {str(e)}',
-            'service_status': 'error'
-        }), 500
+# 重复的函数定义已删除，使用下面更完整的版本
 
 @pdf_converter_bp.route('/health', methods=['GET'])
 def health_check():
